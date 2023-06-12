@@ -4,14 +4,22 @@ Envolve desenvolvimento e consumo de APIs em uma simulação de controle de pedi
 
 ## Descrição
 
-Subindo a parte em Django. A parte em React estarpa disponível logo mais.
+Subindo a parte em Django. A parte em React estará disponível logo mais. Tenho uma entrega ainda hoje.
 
 - DRF;
 - Acrescentei lógica simplificada para estoque, consumo do estoque, impostos etc;
 - Existem automações para popular a base de dados, incluindo uma que tenta simular comportamento humano gerando pedidos. Claro que seria possível adicionar mil critérios e condiçoes, mas colocar mais energia nesse tipo de coisa acabaria fugindo do escopo;
 - A idéia era adicionar segurança, também, mas faltou tempo. Estava pensando hoje em Keycloak. Tanto apara autenticação entre os serviços, como para autenticação/autorização de usuários;
+- Em templates, há código JS para corrigir um problema do campo preço no admin. O normal seria criar um arquivo separado e incluir, mas coloquei no próprio corpo do base_site.html para facilitat;
+- Tratamento de erros das APIs também está básico;
+- Não escrevi muitos testes por total falta de tempo.
 
 Qualquer dúvida contatos abaixo. Valeu!
+
+![DRF](https://routerlabs.io/img/01.jpg)
+![Swagger](https://routerlabs.io/img/02.jpg)
+![Django Admin](https://routerlabs.io/img/03.jpg)
+![React](https://routerlabs.io/img/04.jpg)
 
 ## Pré-requisitos
 
