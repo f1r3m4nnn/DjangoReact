@@ -1,0 +1,19 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+drf-yasg = {extras = ["validation"], version = "*"}
+coreapi = "*"
+pillow = "*"
+django-admin-interface = "*"
+django-cors-headers = "*"
+django-auditlog = "*"
+django-taggit = "*"
+numpy = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.11"

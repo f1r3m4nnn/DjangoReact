@@ -1,0 +1,90 @@
+{% extends "admin/base_site.html" %}
+{% block extrahead %}
+    <style>
+        .boxgradient {
+            border-color: #000 !important; /* Possibilitando fallback. */
+            border-image: linear-gradient(45deg, rgb(154, 209, 15), rgba(250, 250, 66, 0.767)) 1 !important;
+            border-width: 3px !important;
+            border-style: solid !important;
+        } 
+    </style>
+    <script  type="text/javascript" >
+
+    /**
+     *  Isso vale documentar para o futuro.
+     * 
+     * 
+     *  Atualiza dinamicamente os preços nos campos do  formulário de detalhes do pedido
+     *  na interface do administrador sempre que um item for selecionado no SELECT.
+     * 
+     * -    Adiciona um listener ao evento 'DOMContentLoaded' para garantir a não execução
+     *      até que toda a página seja carregada.
+     * 
+     * -    Um listener de evento é então adicionado ao elemento de formulário 'order_form',
+     *      que ouve para qualquer evento 'change' nos seus childs. Técnica de nome DELEGAÇÃO
+     *      DE EVENTOS. Onde um handler é adicionado ao elemento pai e, em seguida, o evento
+     *      é delegado aos seus filhos. Isso é útil quando você tem muitos elementos que você
+     *      deseja ouvir, pois você pode utilizar um único listener.
+     * 
+     * -    Quando um 'change' é detectado, primeiro verifica-se o elemento que disparou o é 
+     *      SELECT e se o ID inicia com 'id_details', evitando problemas em outros trechos da
+     *      aplicação e se concentrando onde o troço é relevante.
+     * 
+     * -    Em seguida, verifico se o valor do referido elemento 'select' mudou desde o último
+     *      'change' disparado. Comparo o valor atual com o valor armazenado no atributo
+     *      'data-previous-value', que, por sua vez, armazena o valor prévio.
+     * 
+     * -    Se o valor tiver mudado, segue um GET ao endpoint '/items/',  passando o valor do
+     *      'select' (ID do item selecionado) como um parâmetro.
+     * 
+     * -    Quando a solicitação é retornada com sucesso, parseia a parte relevante do JSON e
+     *      o preço do item é extraído.
+     * 
+     * -    Finalmente, rola um update do campo 'price_at_sale' correspondente no formulário 
+     *      refletindo o preço do novo item selecionado. O valor atualizado do 'select' é
+     *      armazenado em 'data-previous-value' e a vida segue seu rumo.
+     * 
+     * -    Manterei os logs para fins de documentação e consulta futura.
+     */
+
+        document.addEventListener("DOMContentLoaded", function() {
+            console.log("DOM pronto.");
+
+            document.getElementById("order_form").addEventListener('change', function(event) {
+                console.log("Change acionado.");
+
+                let select_element = event.target;
+
+                console.log("Quem disparou: ", select_element.id);
+
+                if (select_element.tagName === 'SELECT' && select_element.id.startsWith('id_details')) {
+                    console.log("Detecção do select com ID correto.");
+
+                    let previous_value = select_element.getAttribute('data-previous-value');
+                    if (select_element.value !== previous_value) {
+                        console.log("Atualização checada, positivo, iniciando AJAX");
+
+                        let xhr = new XMLHttpRequest();
+                        xhr.open('GET', '/items/' + select_element.value + '/');
+                        xhr.onload = function() {
+                            if (xhr.status === 200) {
+                                let response_data = JSON.parse(xhr.responseText);
+
+                                // Recupera o preço aqui.
+                                let item_price = response_data.data.attributes.price;
+
+                                let id_segments = select_element.id.split('-');
+                                let id_pricefield = id_segments.slice(0, -1).join('-') + '-price_at_sale';
+                                document.getElementById(id_pricefield).value = item_price;
+                            }
+                        };
+                        xhr.send();
+
+                        select_element.setAttribute('data-previous-value', select_element.value);
+                    }
+                }
+            });
+        });
+
+    </script>
+{% endblock %}
